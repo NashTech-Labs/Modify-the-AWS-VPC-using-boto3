@@ -5,35 +5,34 @@ import boto3
 from botocore.exceptions import ClientError
 import json
 
-AWS_REGION = input("Please enter the AWS_REGION")
+REGION = input("Please enter the REGION")
 
-# this is the configration for the logger
+# this is the configration for the logger_for
 
-logger = logging.getLogger()
+logger_for = logging.getlogger_for()
 logging.basicConfig(level=logging.INFO,
                     format='%(asctime)s: %(levelname)s: %(message)s')
 
-vpc_client = boto3.client("ec2", region_name=AWS_REGION)
+client_for_VPC= boto3.client("ec2", region_name=REGION)
 
 
-def modify_vpc(vpc_id, dns_support):
+def modify_vpc(id, dns):
    
     try:
-        response = vpc_client.modify_vpc(
-            EnableDnsSupport={'Value': dns_support}, VpcId=vpc_id)
+        res = client_for_VPC.modify_vpc(
+            EnableDnsSupport={'Value': dns}, VpcId=id)
 
     except ClientError:
-        logger.exception('This can not be modify.')
+        logger_for.exception('This can not be modify.')
         raise
     else:
-        return response
+        return res
 
 
 if __name__ == '__main__':
-    # VPC_ID = 'vpc-073f1851ba2a97029'
     VPC_ID = input("Enter the VPC ID")
-    enableDnsSupport = True
-    vpc_attribute = modify_vpc(VPC_ID, enableDnsSupport)
-    logger.info(
+    enableDnsSupport = input("Enter your answer in True or Flase: ")
+    attribute = modify_vpc(VPC_ID, enableDnsSupport)
+    logger_for.info(
         f'Your VPC has been modified. New value: {enableDnsSupport}'
     )
